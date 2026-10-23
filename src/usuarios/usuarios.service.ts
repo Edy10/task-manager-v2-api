@@ -1,14 +1,17 @@
-import {ConflictException, Injectable, InternalServerErrorException} from '@nestjs/common';
+import {ConflictException, Injectable, InternalServerErrorException, UnauthorizedException} from '@nestjs/common';
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { Usuario } from './entities/usuario.entity'
 import * as bcrypt from 'bcrypt';
+import { JwtService } from "@nestjs/jwt";
+import { Usuario } from './entities/usuario.entity'
 
 @Injectable()
 export class UsuariosService {
     constructor(
         @InjectRepository(Usuario)
         private readonly usuarioRepository: Repository<Usuario>,
+
+        private readonly jwtService: JwtService,
     ) {}
 
     listarUsuarios() {
@@ -43,5 +46,31 @@ export class UsuariosService {
         } catch (erro) {
             throw new InternalServerErrorException('Erro ao cadastrar usuário.');
         }
+    }
+
+    async login(email: string, senha: string) {
+        const usuario = await this.usuarioRepository.findOne({
+            where: {email},
+        });
+
+        if (!usuario) {
+            throw new UnauthorizedException('E-mail ou senha inválida.');
+        }
+
+        const senhaValida = await bcrypt.compare(
+            senha,
+            usuario.senha,
+        );
+
+        if (!senhaValida) {
+            throw new UnauthorizedException('E-mail ou senha inválida.');
+        }
+
+        const token = await this.jwtService.signAsync({
+            id: usuario.id,
+            email: usuario.email,
+        });
+
+        return {token};
     }
 }

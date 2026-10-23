@@ -20,4 +20,14 @@ export class UsuariosController {
             body.senha,
         );
     }
+
+    @Post('login')
+    login(
+        @Body() body: {email: string, senha: string},
+    ) {
+        return this.usuariosService.login(
+            body.email,
+            body.senha
+        );
+    }
 }
