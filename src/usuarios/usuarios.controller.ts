@@ -1,5 +1,7 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { AuthGuard } from "../auth.guard";
 import { UsuariosService } from "./usuarios.service";
+import {get} from "http";
 
 @Controller('usuarios')
 export class UsuariosController {
@@ -30,4 +32,13 @@ export class UsuariosController {
             body.senha
         );
     }
+
+    @Get('perfil')
+    @UseGuards(AuthGuard)
+    perfil() {
+        return {
+            mensagem: 'Rota protegida acessada com sucesso.',
+        };
+    }
+
 }
