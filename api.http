@@ -1,0 +1,35 @@
+### Listar usuários
+GET http://localhost:3001/usuarios
+
+###
+
+### Criar usuário
+POST http://localhost:3001/usuarios
+Content-Type: application/json
+
+{
+  "nome": "Edivaldo",
+  "email": "edivaldo@gmail.com",
+  "senha": "123456"
+}
+
+###
+
+### Login
+POST http://localhost:3001/usuarios/login
+Content-Type: application/json
+
+{
+  "email": "edivaldo@gmail.com",
+  "senha": "123456"
+}
+
+> {%
+    client.global.set("token", response.body.token);
+%}
+
+###
+
+### Perfil autenticado
+GET http://localhost:3001/usuarios/perfil
+Authorization: Bearer {{token}}

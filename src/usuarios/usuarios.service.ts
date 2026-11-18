@@ -74,4 +74,15 @@ export class UsuariosService {
 
         return {token};
     }
+
+    async buscarPorId(id: number) {
+        return this.usuarioRepository.findOne({
+            where: { id },
+            select: {
+                id: true,
+                nome: true,
+                email: true,
+            },
+        });
+    }
 }

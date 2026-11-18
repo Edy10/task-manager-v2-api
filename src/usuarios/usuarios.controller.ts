@@ -1,11 +1,12 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import {Body, Controller, Get, Post, Req, UseGuards} from '@nestjs/common';
 import { AuthGuard } from "../auth.guard";
 import { UsuariosService } from "./usuarios.service";
-import {get} from "http";
 
 @Controller('usuarios')
 export class UsuariosController {
-    constructor(private readonly usuariosService: UsuariosService) {}
+    constructor(
+        private readonly usuariosService: UsuariosService,
+    ) {}
 
     @Get()
     listarUsuarios() {
@@ -14,7 +15,11 @@ export class UsuariosController {
 
     @Post()
     criarUsuario(
-        @Body() body: { nome: string; email: string; senha: string },
+        @Body() body: {
+            nome: string;
+            email: string;
+            senha: string
+        },
     ) {
         return this.usuariosService.criarUsuario(
             body.nome,
@@ -25,7 +30,10 @@ export class UsuariosController {
 
     @Post('login')
     login(
-        @Body() body: {email: string, senha: string},
+        @Body() body: {
+            email: string,
+            senha: string
+        },
     ) {
         return this.usuariosService.login(
             body.email,
@@ -35,10 +43,10 @@ export class UsuariosController {
 
     @Get('perfil')
     @UseGuards(AuthGuard)
-    perfil() {
-        return {
-            mensagem: 'Rota protegida acessada com sucesso.',
-        };
+    perfil(@Req() request: any) {
+        const usuario = request.usuario;
+
+        return this.usuariosService.buscarPorId(usuario.id);
     }
 
 }
