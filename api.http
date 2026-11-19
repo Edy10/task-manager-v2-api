@@ -33,3 +33,14 @@ Content-Type: application/json
 ### Perfil autenticado
 GET http://localhost:3001/usuarios/perfil
 Authorization: Bearer {{token}}
+
+### Listar tarefas
+GET http://localhost:3001/tarefas
+
+### Criar tarefa
+POST http://localhost:3001/tarefas
+Content-Type: application/json
+
+{
+  "titulo": "Estudar NestJS"
+}
